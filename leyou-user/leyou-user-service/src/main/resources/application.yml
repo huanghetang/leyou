@@ -1,0 +1,45 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: user-service
+  redis:
+    host: 192.168.25.134
+  rabbitmq:
+    host: 192.168.25.134
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+    template:
+      retry:
+        enabled: true
+        initial-interval: 10000ms
+        max-interval: 30000ms
+        multiplier: 2
+      exchange: ly.sendPhoneCode.exchange
+    publisher-confirms: true
+  datasource:
+    url: jdbc:mysql:///leyou
+    username: root
+    password: root
+
+code:
+    redis:
+      prefix: phone_code
+logging:
+  level:
+     com.leyou.user: debug
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 10 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 50 # 10秒不发送就过期
+mybatis:
+  type-aliases-package: com.leyou.user.pojo
+  configuration:
+    map-underscore-to-camel-case: true

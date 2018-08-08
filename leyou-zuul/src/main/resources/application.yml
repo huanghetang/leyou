@@ -1,0 +1,58 @@
+server:
+  port: 10010
+spring:
+  application:
+    name: zuul
+  servlet:
+    multipart:
+      max-file-size: 5MB
+zuul:
+  retryable: true #需要开启重试,默认是false
+  prefix: /api
+  strip-prefix: true
+  routes:
+    item-service: /item/**
+    upload-service: /upload/**
+    search-service: /search/**
+    user-service: /user/**
+    auth-service: /auth/**
+    cart-service: /cart/**
+    order-service: /order/**
+  add-host-header: true
+  sensitive-headers:
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+    registry-fetch-interval-seconds: 10
+    instance:
+        prefer-ip-address: true
+        ip-address: 127.0.0.1
+        instance-id: ${spring.application.name}:${server.port}
+
+ribbon:
+  ConnectTimeout: 250 # 连接超时时间(ms)
+  ReadTimeout: 500000 # 通信超时时间(ms)
+  OkToRetryOnAllOperations: false # 是否对所有操作重试
+  MaxAutoRetriesNextServer: 1 # 同一服务不同实例的重试次数
+  MaxAutoRetries: 1 # 同一实例的重试次数
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMillisecond: 500000 # 熔断超时时长：10000ms
+ly:
+  zuul:
+    jwt:
+      pubKeyPath: F:/hm/ssh/rsa.pub # 公钥地址
+      cookieName: LY_TOKEN
+    allowpath:
+        - /api/auth
+        - /api/search
+        - /api/user/register
+        - /api/user/check
+        - /api/user/code
+        - /api/item

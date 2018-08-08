@@ -1,0 +1,53 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: item-service
+  datasource:
+    url: jdbc:mysql:///leyou
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  rabbitmq:
+    host: 192.168.25.134
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+    publisher-confirms: true
+    template:
+      retry:
+        enabled: true
+        initial-interval: 10000ms
+        max-interval: 30000ms
+        multiplier: 2
+      exchange: ly.item.exchange
+
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 10 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 30 # 10秒不发送就过期
+logging:
+  level:
+    com.leyou.item: debug
+mybatis:
+  type-aliases-package: com.leyou.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+
+#fastDFS配置
+fdfs:
+  so-timeout: 1501
+  connect-timeout: 601
+  thumb-image: # 缩略图
+    width: 60
+    height: 60
+  tracker-list: # tracker地址
+    - 192.168.25.134:22122
